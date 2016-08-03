@@ -21,6 +21,7 @@ const debug         = require('debug')('informer');
 // Socket.io
 const socketio      = require('socket.io')(config.net.port);
 const joblog        = socketio.of('/api/v1/logs/job');
+
 // Watch for changes in MongoDB oplog
 const MongoWatch    = require('mongo-watch');
 watcher             = new MongoWatch({
@@ -29,11 +30,24 @@ watcher             = new MongoWatch({
   host:             config.mongo.location
 });
 
+// Mongoose
+const mongoose      = require('mongoose');
+mongoose.connect('mongodb://localhost/muncher');
+const Job           = require('./lib/model/job');
+
 // emit changes through socket.io
 watcher.watch(config.mongo.database + '.jobs', event => {
-  if(event.operation === 'update' && event.data.$set) {
-    debug(event);
-    joblog.to(event.data.id).emit(event.data.$set);
-  } // only emit updates
+  if (event.operation === 'update') {
+    if (event.data.$set) {
+      debug('$set');
+      Job.findById(event.targetId, (err, job) => {
+        event.data.$set.id = job.id;
+        joblog.emit('set', event.data.$set);
+      });
+    } else {
+      // whole document has been updated.
+      debug('document');
+      joblog.emit('document', event.data);
+    }
+  }
 });
-
