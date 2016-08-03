@@ -18,29 +18,19 @@
 const config        = require('./config/config');
 const debug         = require('debug')('informer');
 
-
+// Socket.io
+const socketio      = require('socket.io')(config.net.port);
+const joblog        = socketio.of('/api/v1/logs/job');
+// Watch for changes in MongoDB oplog
 const MongoWatch    = require('mongo-watch');
-watcher             = new MongoWatch({format: 'pretty', useMasterOplog:true});
-
-watcher.watch('muncher.jobs', event => {
-  console.log('something changed:', event);
+watcher             = new MongoWatch({
+  format:           'pretty',
+  useMasterOplog:   true,
+  host:             config.mongo.location
 });
 
-// Express
-const express       = require('express');
-const compression   = require('compression');
-const bodyParser    = require('body-parser');
-const app           = express();
-
-app.use(compression());
-app.use(bodyParser.json());
-
-// finally start webserver
-app.listen(config.net.port, () => {
-  console.log('informer v%s.%s.%s, api version %s waiting for requests on %s.',
-      config.version.major,
-      config.version.minor,
-      config.version.bug,
-      config.version.api,
-      config.net.port );
+// emit changes through socket.io
+watcher.watch(config.mongo.database + '.jobs', event => {
+  joblog.emit(event.data.id, event.data);
 });
+

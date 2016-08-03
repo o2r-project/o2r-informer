@@ -28,13 +28,7 @@ c.version.api    = 1;
 
 // network & database
 c.net.port         = env.INFORMER_PORT || 8082;
-c.mongo.location   = env.INFORMER_MONGODB || 'mongodb://localhost/';
+c.mongo.location   = env.INFORMER_MONGODB || 'localhost';
 c.mongo.database   = env.INFORMER_MONGODB_DATABASE || 'muncher';
-c.mongo.creds      = {};
-
-// fix mongo location if trailing slash was omitted
-if (c.mongo.location[c.mongo.location.length-1] !== '/') {
-  c.mongo.location += '/';
-}
 
 module.exports = c;

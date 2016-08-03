@@ -37,7 +37,7 @@ docker-compose down -v
 * `INFORMER_PORT`
   Define on which Port o2r-informer should listen. Defaults to `8082`.
 * `INFORMER_MONGODB` __Required__
-  Location for the mongo db. Defaults to `mongodb://localhost/`. You will very likely need to change this.
+  Hostname for the mongo db. Defaults to `localhost`. You will very likely need to change this.
 * `INFORMER_MONGODB_DATABASE`
   Which database inside the mongo db should be used. Defaults to `muncher`.
 

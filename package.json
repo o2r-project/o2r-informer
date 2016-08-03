@@ -18,10 +18,8 @@
   },
   "homepage": "https://github.com/o2r-project/o2r-informer#readme",
   "dependencies": {
-    "body-parser": "^1.15.2",
-    "compression": "^1.6.2",
     "debug": "^2.2.0",
-    "express": "^4.14.0",
-    "mongo-watch": "^0.2.8"
+    "mongo-watch": "^0.2.8",
+    "socket.io": "^1.4.8"
   }
 }
