@@ -2,6 +2,8 @@
 
 Node.js implementation of the WebSocket status update part of the o2r-web-api.
 
+__!! This is not yet ready to be used !!__
+
 Requirements:
 
 ```
