@@ -31,6 +31,9 @@ watcher             = new MongoWatch({
 
 // emit changes through socket.io
 watcher.watch(config.mongo.database + '.jobs', event => {
-  joblog.emit(event.data.id, event.data);
+  if(event.operation === 'update' && event.data.$set) {
+    debug(event);
+    joblog.to(event.data.id).emit(event.data.$set);
+  } // only emit updates
 });
 
