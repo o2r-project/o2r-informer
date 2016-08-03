@@ -1,4 +1,4 @@
-#o2r informer
+# o2r informer
 
 Node.js implementation of the WebSocket status update part of the o2r-web-api.
 
@@ -10,7 +10,11 @@ npm
 mongodb
 ```
 
-##Dockerfile
+## Preparing the MongoDB
+
+This service uses the MongoDB oplog, which is normally used in replication sets. It will record all changes to the Master MongoDB and provide them to potential replications. On a single-server installation, this is not enabled by default. You will need to pass the `--master` argument while starting your MongoDB instance, or put the line `master = true` into your `/etc/mongod.conf` file.
+
+## Dockerfile
 
 This project includes a `Dockerfile` which can be built with
 ```
@@ -26,7 +30,7 @@ cd docker-compose && docker-compose up
 docker-compose down -v
 ```
 
-###Available environment variables
+### Available environment variables
 
 * `INFORMER_PORT`
   Define on which Port o2r-informer should listen. Defaults to `8082`.
@@ -35,7 +39,7 @@ docker-compose down -v
 * `INFORMER_MONGODB_DATABASE`
   Which database inside the mongo db should be used. Defaults to `muncher`.
 
-##License
+## License
 
 o2r-informer is licensed under Apache License, Version 2.0, see file LICENSE.
 
