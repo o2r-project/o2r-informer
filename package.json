@@ -1,0 +1,27 @@
+{
+  "name": "o2r-informer",
+  "version": "0.0.1",
+  "description": "Node.js implementation of the WebSocket status update part of the [o2r-web-api](https://o2r.info/o2r-web-api).",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o2r-project/o2r-informer.git"
+  },
+  "author": "o2r-project (https://o2r.info)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/o2r-project/o2r-informer/issues"
+  },
+  "homepage": "https://github.com/o2r-project/o2r-informer#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "compression": "^1.6.2",
+    "debug": "^2.2.0",
+    "express": "^4.14.0",
+    "mongo-watch": "^0.2.8"
+  }
+}

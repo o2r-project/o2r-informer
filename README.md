@@ -1,0 +1,42 @@
+#o2r informer
+
+Node.js implementation of the WebSocket status update part of the o2r-web-api.
+
+Requirements:
+
+```
+nodejs >= 6.2
+npm
+mongodb
+```
+
+##Dockerfile
+
+This project includes a `Dockerfile` which can be built with
+```
+docker build -t o2r-informer .
+```
+
+The image can then be run and configured via environment variables. For convenience,
+we include a `docker-compose` configuration, which can be run with
+
+```
+cd docker-compose && docker-compose up
+# after you're done, shutdown and delete all volumes (data):
+docker-compose down -v
+```
+
+###Available environment variables
+
+* `INFORMER_PORT`
+  Define on which Port o2r-informer should listen. Defaults to `8082`.
+* `INFORMER_MONGODB` __Required__
+  Location for the mongo db. Defaults to `mongodb://localhost/`. You will very likely need to change this.
+* `INFORMER_MONGODB_DATABASE`
+  Which database inside the mongo db should be used. Defaults to `muncher`.
+
+##License
+
+o2r-informer is licensed under Apache License, Version 2.0, see file LICENSE.
+
+Copyright (C) 2016 - o2r project.
