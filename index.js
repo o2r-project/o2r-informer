@@ -32,7 +32,7 @@ watcher             = new MongoWatch({
 
 // Mongoose
 const mongoose      = require('mongoose');
-mongoose.connect('mongodb://localhost/muncher');
+mongoose.connect('mongodb://' + config.mongo.location + '/' + config.mongo.database);
 const Job           = require('./lib/model/job');
 
 socketio.serveClient(true)
