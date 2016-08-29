@@ -20,12 +20,10 @@
 
       function update(event) {
         // This will hold the Job ID the data relates to.
-        document.getElementById("jobid").innerHTML = event["id"];
-        // Only the changed fields will be transmitted in a event, so check for each. For now, the data can only be accessed by string-keys,
-        // because it is not a "real" object: { "steps.image_execute.status" : "foobar" } vs. { steps: { image_execute: { status : "foobar" } } }.
-        if(event["steps.image_execute.status"] !== undefined) {
-          document.getElementById("status").innerHTML = event["steps.image_execute.status"];
-          switch (event["steps.image_execute.status"]) {
+        document.getElementById("jobid").innerHTML = event.id;
+        if(event.steps.image_build !== undefined) {
+          document.getElementById("status").innerHTML = event.steps.image_build.status;
+          switch (event.steps.image_build.status) {
             case "queued":
               document.getElementById("log").style.backgroundColor = "#f0f0f0";
               break;
@@ -42,14 +40,12 @@
               break;
           }
         }
-        if(event["steps.image_execute.text"] !== undefined) {
-          document.getElementById("log").innerHTML = event["steps.image_execute.text"];
+        if(event.steps.image_build.text !== undefined) {
+          document.getElementById("log").innerHTML = event.steps.image_build.text;
           window.scrollTo(0,document.body.scrollHeight);
         }
       }
 
-      // the server will emit "document" and "set" events for now. Later on these will be collapsed to one event.
-      // a event will then contain the new information which is processed in update()
       socket.on("document", update);
       socket.on("set", update);
     </script>
