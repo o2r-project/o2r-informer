@@ -35,18 +35,51 @@ const mongoose      = require('mongoose');
 mongoose.connect('mongodb://localhost/muncher');
 const Job           = require('./lib/model/job');
 
+socketio.serveClient(true)
+
+
+
+/**
+ * turns a string like "a.b.c" into a object "{a:{b:{c: value}}}"
+ * @param  {string} str string with object path
+ * @param  {Object} val value of the referenced object.
+ * @return {Object}     new object according to path with the provided value set.
+ */
+objectify = (str, val) => {
+  let obj = {}
+  str.split('.').reduce(function(cur, next, i, arr) {
+    if (!cur[next]) cur[next] = {}
+    if (i === arr.length - 1) cur[next] = val
+    return cur[next]
+  }, obj)
+  return obj
+}
+
+/**
+ * merge all fields from obj2 into obj1 and return obj1
+ * @param  {Object} obj1 object
+ * @param  {Object} obj2 object
+ * @return {Object}      object containing obj1 and all fields of obj2
+ */
+merge = (obj1, obj2) => {
+  for (var attr in obj2) {
+    obj1[attr] = obj2[attr]
+  }
+  return obj1
+}
+
 // emit changes through socket.io
 watcher.watch(config.mongo.database + '.jobs', event => {
   if (event.operation === 'update') {
 
     // This code needs a lot more logic! Two types of events can happen:
-    // * partial update
-    // * complete update
+    // * partial (field) update
+    // * complete (whole document) update
     //
     // partial update:
     // In a partial update, the event.data will only hold the $set object with a field
     // that is named after the key, and its new value. You can't access it like event.data.$set.a.b.c,
-    // because the field-name is a string, so you need to do event.data.$set[a.b.c].
+    // because the field-name is a string, so you need to do event.data.$set["a.b.c"].
     // TODO: This should probably be rebuilt to a real object for consistency.
     //
     // also, it will not contain the Job ID, which is saved in the 'id' key. It will contain the targetId though,
@@ -60,12 +93,20 @@ watcher.watch(config.mongo.database + '.jobs', event => {
     if (event.data.$set) {
       // only partial update, retrieve the job id from the complete document
       Job.findById(event.targetId, (err, job) => {
-        event.data.$set.id = job.id; //attach retrieved job id to output
-        joblog.emit('set', event.data.$set);
+        let data = { partial: true, id: job.id}
+        //convert object-strings to objects
+        for (var name in event.data.$set) {
+          let obj = objectify(name, event.data.$set[name])
+          console.log(obj)
+          data = merge(data, obj)
+        }
+        console.log(data)
+        joblog.emit('set', data)
       });
     } else {
       // whole document has been updated.
       debug('document');
+      event.data.partial = false
       joblog.emit('document', event.data);
     }
   }
