@@ -20,7 +20,7 @@ c.net = {};
 c.mongo = {};
 var env = process.env;
 
-// Information about informer
+// information about informer
 c.version.major  = 0;
 c.version.minor  = 1;
 c.version.bug    = 0;
@@ -30,5 +30,11 @@ c.version.api    = 1;
 c.net.port         = env.INFORMER_PORT || 8082;
 c.mongo.location   = env.INFORMER_MONGODB || 'localhost';
 c.mongo.database   = env.INFORMER_MONGODB_DATABASE || 'muncher';
+
+// socket.io (namespaces etc.)
+c.socketio = {};
+c.socketio.namespaces = {};
+c.socketio.namespaces.job = '/api/v1/logs/job';
+
 
 module.exports = c;

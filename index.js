@@ -20,13 +20,13 @@ const debug         = require('debug')('informer');
 
 // Socket.io
 const socketio      = require('socket.io')(config.net.port);
-const joblog        = socketio.of('/api/v1/logs/job');
+const joblog        = socketio.of(config.socketio.namespaces.job);
+socketio.serveClient(true);
 
 // Watch for changes in MongoDB oplog
 const MongoWatch    = require('mongo-watch');
-watcher             = new MongoWatch({
+var watcher         = new MongoWatch({
   format:           'pretty',
-  useMasterOplog:   true,
   host:             config.mongo.location
 });
 
@@ -34,10 +34,6 @@ watcher             = new MongoWatch({
 const mongoose      = require('mongoose');
 mongoose.connect('mongodb://' + config.mongo.location + '/' + config.mongo.database);
 const Job           = require('./lib/model/job');
-
-socketio.serveClient(true)
-
-
 
 /**
  * turns a string like "a.b.c" into a object "{a:{b:{c: value}}}"
@@ -59,7 +55,7 @@ objectify = (str, val) => {
  * merge all fields from obj2 into obj1 and return obj1
  * @param  {Object} obj1 object
  * @param  {Object} obj2 object
- * @return {Object}      object containing obj1 and all fields of obj2
+ * @return {Object} object containing obj1 and all fields of obj2
  */
 merge = (obj1, obj2) => {
   for (var attr in obj2) {
@@ -67,6 +63,10 @@ merge = (obj1, obj2) => {
   }
   return obj1
 }
+
+joblog.on('connection', function(socket) {
+  debug("Someone connected to joblog: %s", socket.id);
+});
 
 // emit changes through socket.io
 watcher.watch(config.mongo.database + '.jobs', event => {
@@ -78,10 +78,11 @@ watcher.watch(config.mongo.database + '.jobs', event => {
         //convert object-strings to objects
         for (var name in event.data.$set) {
           let obj = objectify(name, event.data.$set[name])
-          console.log(obj)
+          //console.log(obj)
           data = merge(data, obj)
         }
-        console.log(data)
+
+        debug("Update! %s", JSON.stringify(data));
         joblog.emit('set', data)
       });
     } else {
@@ -92,3 +93,7 @@ watcher.watch(config.mongo.database + '.jobs', event => {
     }
   }
 });
+
+debug('informer ' + config.version.major + '.' + config.version.minor + '.' +
+      config.version.bug + ' with api version ' + config.version.api +
+      ' waiting for requests on port ' + config.net.port);

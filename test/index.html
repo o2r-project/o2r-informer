@@ -12,7 +12,7 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script>
       // Setup socket.io to connect to the server and the namespace '/api/v1/logs/job'.
-      var socket = io('http://localhost:8082/api/v1/logs/job');
+      var socket = io('http://localhost/api/v1/logs/job');
       socket.on('connect', function(data) {
         console.log('connected!');
       });
