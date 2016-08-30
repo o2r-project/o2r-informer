@@ -28,12 +28,14 @@ c.version.api    = 1;
 
 // network & database
 c.net.port         = env.INFORMER_PORT || 8082;
-c.mongo.location   = env.INFORMER_MONGODB || 'localhost';
+c.mongo.location = {};
+c.mongo.location.full = env.MUNCHER_MONGODB || 'mongodb://localhost/';
+c.mongo.location.hostonly = env.MUNCHER_MONGODB_HOST || 'localhost';
 c.mongo.database   = env.INFORMER_MONGODB_DATABASE || 'muncher';
 
 // fix mongo location if trailing slash was omitted
-if (c.mongo.location[c.mongo.location.length - 1] !== '/') {
-  c.mongo.location += '/';
+if (c.mongo.location.full[c.mongo.location.full.length - 1] !== '/') {
+  c.mongo.location.full += '/';
 }
 
 // socket.io (namespaces etc.)

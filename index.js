@@ -27,16 +27,12 @@ socketio.serveClient(true);
 const MongoWatch    = require('mongo-watch');
 var watcher         = new MongoWatch({
   format:           'pretty',
-  host:             config.mongo.location
+  host:             config.mongo.location.hostonly
 });
 
 // Mongoose
 const mongoose      = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.location + config.mongo.database);
-mongoose.connection.on('error', () => {
-  console.log('could not connect to mongodb on ' + config.mongo.location + config.mongo.database + ', ABORT');
-  process.exit(2);
-});
+mongoose.connect(config.mongo.location.full + config.mongo.database);
 
 const Job           = require('./lib/model/job');
 
