@@ -32,7 +32,12 @@ var watcher         = new MongoWatch({
 
 // Mongoose
 const mongoose      = require('mongoose');
-mongoose.connect('mongodb://' + config.mongo.location + '/' + config.mongo.database);
+mongoose.connect('mongodb://' + config.mongo.location + config.mongo.database);
+mongoose.connection.on('error', () => {
+  console.log('could not connect to mongodb on ' + config.mongo.location + config.mongo.database + ', ABORT');
+  process.exit(2);
+});
+
 const Job           = require('./lib/model/job');
 
 /**

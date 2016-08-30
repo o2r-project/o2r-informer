@@ -31,6 +31,11 @@ c.net.port         = env.INFORMER_PORT || 8082;
 c.mongo.location   = env.INFORMER_MONGODB || 'localhost';
 c.mongo.database   = env.INFORMER_MONGODB_DATABASE || 'muncher';
 
+// fix mongo location if trailing slash was omitted
+if (c.mongo.location[c.mongo.location.length - 1] !== '/') {
+  c.mongo.location += '/';
+}
+
 // socket.io (namespaces etc.)
 c.socketio = {};
 c.socketio.namespaces = {};
