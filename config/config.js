@@ -22,12 +22,12 @@ var env = process.env;
 
 // information about informer
 c.version.major  = 0;
-c.version.minor  = 1;
+c.version.minor  = 2;
 c.version.bug    = 0;
 c.version.api    = 1;
 
 // network & database
-c.net.port         = env.INFORMER_PORT || 8082;
+c.net.port = env.INFORMER_PORT || 8082;
 c.mongo.location = {};
 c.mongo.location.full = env.MUNCHER_MONGODB || 'mongodb://localhost/';
 c.mongo.location.hostonly = env.MUNCHER_MONGODB_HOST || 'localhost';
