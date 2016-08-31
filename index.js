@@ -25,11 +25,12 @@ const joblog = socketio.of(config.socketio.namespaces.job);
 socketio.serveClient(true);
 
 // Watch for changes in MongoDB oplog
-debug("Connecting with MongoWatch using host '%s'", config.mongo.location.hostonly);
+debug("Connecting with MongoWatch using host '%s' and port '%s'", config.mongo.location.hostonly, config.mongo.port);
 const MongoWatch = require('mongo-watch');
 var watcher = new MongoWatch({
   format: 'pretty',
-  host: config.mongo.location.hostonly
+  host: config.mongo.location.hostonly,
+  port: config.mongo.port
 });
 
 // Mongoose

@@ -31,7 +31,8 @@ c.net.port         = env.INFORMER_PORT || 8082;
 c.mongo.location = {};
 c.mongo.location.full = env.MUNCHER_MONGODB || 'mongodb://localhost/';
 c.mongo.location.hostonly = env.MUNCHER_MONGODB_HOST || 'localhost';
-c.mongo.database   = env.INFORMER_MONGODB_DATABASE || 'muncher';
+c.mongo.database = env.INFORMER_MONGODB_DATABASE || 'muncher';
+c.mongo.port = env.INFORMER_MONGODB_PORT || 27017;
 
 // fix mongo location if trailing slash was omitted
 if (c.mongo.location.full[c.mongo.location.full.length - 1] !== '/') {

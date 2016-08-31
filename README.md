@@ -25,7 +25,9 @@ docker build -t o2r-informer .
 - `INFORMER_PORT`
   Define on which Port o2r-informer should listen. Defaults to `8082`.
 - `INFORMER_MONGODB` __Required__
-  Hostname for the mongo db. Defaults to `localhost`. You will very likely need to change this.
+  Hostname for the MongoDB. Defaults to `localhost`. You will very likely need to change this.
+- `INFORMER_MONGODB_PORT`
+  Port for the MongoDB. Defaults to `27017`.
 - `INFORMER_MONGODB_DATABASE`
   Which database inside the mongo db should be used. Defaults to `muncher`.
 
