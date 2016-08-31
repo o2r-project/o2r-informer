@@ -15,26 +15,29 @@
  *
  */
 
-const config        = require('./config/config');
-const debug         = require('debug')('informer');
+const config = require('./config/config');
+const debug = require('debug')('informer');
 
 // Socket.io
-const socketio      = require('socket.io')(config.net.port);
-const joblog        = socketio.of(config.socketio.namespaces.job);
+debug("Connecting to socket.io at port %s and namespaces %s", config.net.port, JSON.stringify(config.socketio.namespaces));
+const socketio = require('socket.io')(config.net.port);
+const joblog = socketio.of(config.socketio.namespaces.job);
 socketio.serveClient(true);
 
 // Watch for changes in MongoDB oplog
-const MongoWatch    = require('mongo-watch');
-var watcher         = new MongoWatch({
-  format:           'pretty',
-  host:             config.mongo.location.hostonly
+debug("Connecting with MongoWatch using host '%s'", config.mongo.location.hostonly);
+const MongoWatch = require('mongo-watch');
+var watcher = new MongoWatch({
+  format: 'pretty',
+  host: config.mongo.location.hostonly
 });
 
 // Mongoose
-const mongoose      = require('mongoose');
+debug("Connecting with mongoose using host and database '%s'", config.mongo.location.full + config.mongo.database);
+const mongoose = require('mongoose');
 mongoose.connect(config.mongo.location.full + config.mongo.database);
 
-const Job           = require('./lib/model/job');
+const Job = require('./lib/model/job');
 
 /**
  * turns a string like "a.b.c" into a object "{a:{b:{c: value}}}"
@@ -44,7 +47,7 @@ const Job           = require('./lib/model/job');
  */
 objectify = (str, val) => {
   let obj = {}
-  str.split('.').reduce(function(cur, next, i, arr) {
+  str.split('.').reduce(function (cur, next, i, arr) {
     if (!cur[next]) cur[next] = {}
     if (i === arr.length - 1) cur[next] = val
     return cur[next]
@@ -65,7 +68,12 @@ merge = (obj1, obj2) => {
   return obj1
 }
 
-joblog.on('connection', function(socket) {
+if (!joblog) {
+  console.log('joblog does not exist, ABORT: ' + joblog);
+  process.exit(2);
+}
+
+joblog.on('connection', function (socket) {
   debug("Someone connected to joblog: %s", socket.id);
 });
 
@@ -75,7 +83,7 @@ watcher.watch(config.mongo.database + '.jobs', event => {
     if (event.data.$set) {
       // only partial update, retrieve the job id from the complete document
       Job.findById(event.targetId, (err, job) => {
-        let data = { partial: true, id: job.id}
+        let data = { partial: true, id: job.id }
         //convert object-strings to objects
         for (var name in event.data.$set) {
           let obj = objectify(name, event.data.$set[name])
@@ -96,5 +104,5 @@ watcher.watch(config.mongo.database + '.jobs', event => {
 });
 
 debug('informer ' + config.version.major + '.' + config.version.minor + '.' +
-      config.version.bug + ' with api version ' + config.version.api +
-      ' waiting for requests on port ' + config.net.port);
+  config.version.bug + ' with api version ' + config.version.api +
+  ' waiting for requests on port ' + config.net.port);
