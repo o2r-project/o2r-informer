@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>o2r Informer</title>
+    <title>o2r-informer test page</title>
     <style>
     </style>
   </head>
@@ -13,6 +13,8 @@
     <script>
       // Setup socket.io to connect to the server and the namespace '/api/v1/logs/job'.
       var socket = io('http://localhost/api/v1/logs/job');
+      //var socket = io('https://o2r.uni-muenster.de/api/v1/logs/job');
+      //var socket = io('http://ubsvirt148.uni-muenster.de/api/v1/logs/job');
       socket.on('connect', function(data) {
         console.log('connected!');
       });
@@ -40,8 +42,28 @@
               break;
           }
         }
-        if(event.steps.image_build.text !== undefined) {
-          document.getElementById("log").innerHTML = event.steps.image_build.text;
+        if(event.steps.validate_bag !== undefined && event.steps.validate_bag.text !== undefined) {
+          document.getElementById("log").innerHTML += "VALIDATE BAG:        " + event.steps.validate_bag.text;
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+        if(event.steps.validate_compendium !== undefined && event.steps.validate_compendium.text !== undefined) {
+          document.getElementById("log").innerHTML += "VALIDATE COMPENDIUM: " + event.steps.validate_compendium.text;
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+        if(event.steps.validate_dockerfile !== undefined && event.steps.validate_dockerfile.text !== undefined) {
+          document.getElementById("log").innerHTML += "VALIDATE DOCKERFILE: " + event.steps.validate_dockerfile.text;
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+        if(event.steps.image_build !== undefined && event.steps.image_build.text !== undefined) {
+          document.getElementById("log").innerHTML += "IMAGE BUILD:         " + event.steps.image_build.text;
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+        if(event.steps.image_execute !== undefined && event.steps.image_execute.text !== undefined) {
+          document.getElementById("log").innerHTML += "IMAGE EXECUTE:       " + event.steps.image_execute.text;
+          window.scrollTo(0,document.body.scrollHeight);
+        }
+        if(event.steps.cleanup !== undefined && event.steps.cleanup.text !== undefined) {
+          document.getElementById("log").innerHTML += "CLEANUP:             " + event.steps.cleanup.text;
           window.scrollTo(0,document.body.scrollHeight);
         }
       }
