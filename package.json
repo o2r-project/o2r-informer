@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/o2r-project/o2r-informer#readme",
   "dependencies": {
+    "backoff": "^2.5.0",
     "debug": "^2.2.0",
     "mongo-watch": "^0.2.8",
     "mongoose": "^4.5.8",

@@ -33,6 +33,9 @@ c.mongo.location.full = env.INFORMER_MONGODB || 'mongodb://localhost/';
 c.mongo.location.hostonly = env.INFORMER_MONGODB_HOST || 'localhost';
 c.mongo.database = env.INFORMER_MONGODB_DATABASE || 'muncher';
 c.mongo.port = env.INFORMER_MONGODB_PORT || 27017;
+c.mongo.inital_connection_attempts = 30;
+c.mongo.inital_connection_max_delay = 3000;
+c.mongo.inital_connection_initial_delay = 1000;
 
 // fix mongo location if trailing slash was omitted
 if (c.mongo.location.full[c.mongo.location.full.length - 1] !== '/') {
