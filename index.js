@@ -117,9 +117,9 @@ dbBackoff.on('ready', function (number, delay) {
         }
 
         debug('informer %s with API version %s waiting for requests on port %s',
-          c.version,
-          c.api_version,
-          c.net.port);
+          config.version,
+          config.api_version,
+          config.net.port);
       });
     }
   });
