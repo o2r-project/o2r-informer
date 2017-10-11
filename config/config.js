@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2016 Jan Koppe.
+ * (C) Copyright 2017 o2r-project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +21,8 @@ c.mongo = {};
 var env = process.env;
 
 // information about informer
-c.version.major  = 0;
-c.version.minor  = 2;
-c.version.bug    = 1;
-c.version.api    = 1;
+c.api_version = 1;
+c.version = require('../package.json').version;
 
 // network & database
 c.net.port = env.INFORMER_PORT || 8082;
@@ -33,9 +31,9 @@ c.mongo.location.full = env.INFORMER_MONGODB || 'mongodb://localhost/';
 c.mongo.location.hostonly = env.INFORMER_MONGODB_HOST || 'localhost';
 c.mongo.database = env.INFORMER_MONGODB_DATABASE || 'muncher';
 c.mongo.port = env.INFORMER_MONGODB_PORT || 27017;
-c.mongo.inital_connection_attempts = 30;
-c.mongo.inital_connection_max_delay = 3000;
-c.mongo.inital_connection_initial_delay = 1000;
+c.mongo.initial_connection_attempts = 30;
+c.mongo.initial_connection_max_delay = 3000;
+c.mongo.initial_connection_initial_delay = 1000;
 
 // fix mongo location if trailing slash was omitted
 if (c.mongo.location.full[c.mongo.location.full.length - 1] !== '/') {

@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2016 o2r-project.
+ * (C) Copyright 2017 o2r project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@ const config = require('./config/config');
 const debug = require('debug')('informer');
 const backoff = require('backoff');
 
-var merge = require('./lib/util').merge;
-var objectify = require('./lib/util').objectify;
+const merge = require('./lib/util').merge;
+const objectify = require('./lib/util').objectify;
 
 const Job = require('./lib/model/job');
-
 
 // Socket.io
 debug("Connecting to socket.io at port %s and namespaces %s", config.net.port, JSON.stringify(config.socketio.namespaces));
@@ -39,7 +38,6 @@ if (!joblog) {
 joblog.on('connection', function (socket) {
   debug('Someone connected to joblog: %s', socket.id);
 });
-
 
 // DB connection
 const MongoWatch = require('mongo-watch');
@@ -118,9 +116,10 @@ dbBackoff.on('ready', function (number, delay) {
           dbBackoff.backoff();
         }
 
-        debug('informer ' + config.version.major + '.' + config.version.minor + '.' +
-          config.version.bug + ' with api version ' + config.version.api +
-          ' waiting for requests on port ' + config.net.port);
+        debug('informer %s with API version %s waiting for requests on port %s',
+          c.version,
+          c.api_version,
+          c.net.port);
       });
     }
   });
@@ -131,4 +130,3 @@ dbBackoff.on('fail', function () {
 });
 
 dbBackoff.backoff();
-

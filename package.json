@@ -1,6 +1,6 @@
 {
   "name": "o2r-informer",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Node.js implementation of the WebSocket status update part of the [o2r-web-api](https://o2r.info/o2r-web-api).",
   "main": "index.js",
   "scripts": {
@@ -19,9 +19,9 @@
   "homepage": "https://github.com/o2r-project/o2r-informer#readme",
   "dependencies": {
     "backoff": "^2.5.0",
-    "debug": "^2.6.0",
+    "debug": "^3.1.0",
     "mongo-watch": "^0.2.8",
-    "mongoose": "^4.8.1",
-    "socket.io": "^1.7.2"
+    "mongoose": "^4.12.1",
+    "socket.io": "^2.0.3"
   }
 }
