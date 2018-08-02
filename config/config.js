@@ -14,6 +14,9 @@
  * limitations under the License.
  *
  */
+const util = require('util');
+const debug = require('debug')('informer:config');
+
 var c = {};
 c.version = {};
 c.net = {};
@@ -27,7 +30,7 @@ c.version = require('../package.json').version;
 // network & database
 c.net.port = env.INFORMER_PORT || 8082;
 c.mongo.location = {};
-c.mongo.location.full = env.INFORMER_MONGODB || 'mongodb://localhost/';
+c.mongo.location.full = env.INFORMER_MONGODB || 'mongodb://localhost:27017/';
 c.mongo.location.hostonly = env.INFORMER_MONGODB_HOST || 'localhost';
 c.mongo.database = env.INFORMER_MONGODB_DATABASE || 'muncher';
 c.mongo.port = env.INFORMER_MONGODB_PORT || 27017;
@@ -45,5 +48,6 @@ c.socketio = {};
 c.socketio.namespaces = {};
 c.socketio.namespaces.job = '/api/v1/logs/job';
 
+debug('CONFIGURATION:\n%s', util.inspect(c, { depth: null, colors: true }));
 
 module.exports = c;

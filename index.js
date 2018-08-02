@@ -18,6 +18,7 @@
 const config = require('./config/config');
 const debug = require('debug')('informer');
 const backoff = require('backoff');
+const util = require('util');
 
 const merge = require('./lib/util').merge;
 const objectify = require('./lib/util').objectify;
@@ -25,7 +26,7 @@ const objectify = require('./lib/util').objectify;
 const Job = require('./lib/model/job');
 
 // Socket.io
-debug("Connecting to socket.io at port %s and namespaces %s", config.net.port, JSON.stringify(config.socketio.namespaces));
+debug("Connecting to socket.io at port %s and namespaces %o", config.net.port, config.socketio.namespaces);
 const socketio = require('socket.io')(config.net.port);
 const joblog = socketio.of(config.socketio.namespaces.job);
 socketio.serveClient(true);
@@ -39,12 +40,18 @@ joblog.on('connection', function (socket) {
   debug('Someone connected to joblog: %s', socket.id);
 });
 
-// DB connection
+// DB connection, need mongoose for job access in addition to MongoWatch
+const mongoose = require('mongoose');
 const MongoWatch = require('mongo-watch');
 const dbURI = config.mongo.location.full + config.mongo.database;
-
-// Need mongoose for job access
-const mongoose = require('mongoose');
+var dbOptions = {
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  keepAlive: 30000,
+  socketTimeoutMS: 30000,
+  promiseLibrary: mongoose.Promise,
+  useNewUrlParser: true
+};
 
 function initWatch(callback) {
   // Watch for changes in MongoDB oplog
@@ -64,18 +71,18 @@ function initWatch(callback) {
           let data = { partial: true, id: job.id }
           //convert object-strings to objects
           for (var name in event.data.$set) {
-            let obj = objectify(name, event.data.$set[name])
+            let obj = objectify(name, event.data.$set[name]);
             //console.log(obj)
-            data = merge(data, obj)
+            data = merge(data, obj);
           }
 
-          debug('Update! %s', JSON.stringify(data));
-          joblog.emit('set', data)
+          debug('Update!\n%s', util.inspect(data, {colors: true, depth: 2}));
+          joblog.emit('set', data);
         });
       } else {
         // whole document has been updated.
-        debug('document');
-        event.data.partial = false
+        debug('Document update!\n%s', util.inspect(event.data, {colors: true, depth: 2}));
+        event.data.partial = false;
         joblog.emit('document', event.data);
       }
     }
@@ -97,7 +104,7 @@ dbBackoff.on('backoff', function (number, delay) {
 });
 dbBackoff.on('ready', function (number, delay) {
   debug('Connect to MongoDB (#%s) ...', number);
-  mongoose.connect(dbURI, (err) => {
+  mongoose.connect(dbURI, dbOptions, (err) => {
     if (err) {
       debug('Error during connect: %s', err);
       mongoose.disconnect(() => {
