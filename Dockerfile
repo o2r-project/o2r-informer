@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-FROM alpine:3.6
+FROM alpine:3.8
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing" > /etc/apk/repositories \
   && echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
   && echo "http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
 
 RUN apk add --no-cache \
+    git \
     nodejs \
     dumb-init \
     nodejs-npm \
@@ -32,6 +33,10 @@ COPY config/ config/
 
 RUN npm install --production
 
+RUN apk del \
+    git \
+  && rm -rf /var/cache
+
 # Metadata params provided with docker build command
 ARG VERSION=dev
 ARG VCS_URL
@@ -42,7 +47,7 @@ ARG META_VERSION
 # Metadata http://label-schema.org/rc1/
 LABEL maintainer="o2r-project <https://o2r.info>" \
   org.label-schema.vendor="o2r project" \
-  org.label-schema.url="http://o2r.info" \
+  org.label-schema.url="https://o2r.info" \
   org.label-schema.name="o2r informer" \
   org.label-schema.description="Life status updates for the o2r web API" \    
   org.label-schema.version=$VERSION \

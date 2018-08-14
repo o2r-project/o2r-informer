@@ -18,7 +18,6 @@
 const config = require('./config/config');
 const debug = require('debug')('informer');
 const backoff = require('backoff');
-const util = require('util');
 
 const merge = require('./lib/util').merge;
 const objectify = require('./lib/util').objectify;
@@ -76,12 +75,12 @@ function initWatch(callback) {
             data = merge(data, obj);
           }
 
-          debug('Update!\n%s', util.inspect(data, {colors: true, depth: 2}));
+          debug('Update!            %o', data);
           joblog.emit('set', data);
         });
       } else {
         // whole document has been updated.
-        debug('Document update!\n%s', util.inspect(event.data, {colors: true, depth: 2}));
+        debug('Document update!   %o', event.data);
         event.data.partial = false;
         joblog.emit('document', event.data);
       }

@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-const util = require('util');
 const debug = require('debug')('informer:config');
 
 var c = {};
@@ -48,6 +47,6 @@ c.socketio = {};
 c.socketio.namespaces = {};
 c.socketio.namespaces.job = '/api/v1/logs/job';
 
-debug('CONFIGURATION:\n%s', util.inspect(c, { depth: null, colors: true }));
+debug('CONFIGURATION: %O', c);
 
 module.exports = c;

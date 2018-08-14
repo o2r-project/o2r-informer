@@ -1,6 +1,6 @@
 # o2r informer
 
-Node.js implementation of the WebSocket status update part of the [o2r-web-api](http://o2r.info/o2r-web-api).
+Node.js implementation of the WebSocket status update part of the [o2r-web-api](https://o2r.info/api).
 
 Requirements:
 
