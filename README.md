@@ -1,3 +1,5 @@
+ :warning: Project discontinued :warning: Funcions now integrated in <https://github.com/o2r-project/o2r-muncher>
+
 # o2r informer
 
 Node.js implementation of the WebSocket status update part of the [o2r-web-api](https://o2r.info/api).
